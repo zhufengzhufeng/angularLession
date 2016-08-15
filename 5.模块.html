@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="zfModule">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div ng-controller="firstCtrl">
+    <input type="text" ng-model="name">
+</div>
+{{name}}
+<script src="node_modules/angular/angular.js"></script>
+<script>
+    //ng-app指定启动的模块名字 appModule,告诉angular用appModule来启动angularjs
+    //一切从模块开始，并且我们引入angularjs后会提供一个angular对象
+    console.log(angular);
+    //angular对象中有module这个方法，可以用来创建模块name, requires, configFn
+    //name:模块的名字
+    //requires：模块的依赖,默认无依赖要用空数组代替
+    //configFn:配置的函数
+    //创建模块
+    var app = angular.module('zfModule',[]);//返回当前模块
+    //alert(app== angular.module('zfModule'))
+    //通过模块创建控制器
+    //控制器：就是用来控制数据放到哪个模板里，不同的模板可以采用不同的控制器，
+    //在一个模块下可以声明多个控制器
+    //name:控制的名字
+    //fn:控制器对应的函数
+    //当我们使用一个控制器时，会送一个$scope
+    app.controller('firstCtrl',function ($scope) {
+        //此时viewModel就是我们的$scope，桥梁，用来将我们的数据和模型进行关联,我们可以将数据挂在在$scope上，可以进行双向绑定
+        //此时已经声明了一个独立的作用域，告诉html的使用范围使用ng-controller="控制器的名字"
+    });
+   /* $().html();//取值
+    $().html(123);//设置*/
+</script>
+</body>
+</html>

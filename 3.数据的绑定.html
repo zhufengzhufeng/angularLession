@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" ng-app>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<input type="text" ng-model="name">
+<input type="text" ng-model="age">
+{{name?name:'zfpx'}}
+<div ng-bind="name?name:'zfpx'"></div>
+<div ng-non-bindable>{{zfpx}}</div>
+<div ng-bind-template="{{name}} {{age}}"></div>
+
+<div ng-cloak>
+    {{name}}
+    {{age}}
+    <div>{{age}}</div>
+</div>
+<style>
+    [ng-cloak]{
+        display: none;
+    }
+</style>
+<script src="node_modules/angular/angular.js"></script>
+<script>
+    //1.ng-bind和{{}}的取值方式基本一致，不同处ng-bind可以解决闪烁问题(仍然可以支持三元表达式)
+    //在html中属性是不会显示在页面上，当属性编译后，在插入到div中,原有的变量是不保留的
+    //2.ng-non-bindable
+    //{{zfpx}} 想原封不动的进行输出
+    //3.绑定多个模板 ng-bind-template，可以绑定多个属性，可以解决闪烁问题. 必须引用的是字符串用{{}}将值取出来
+    //4.在angularjs中可以使用ng-cloak解决闪烁问题,ng-cloak在初始情况下先要让其样式display:none当内部数据编译好后移出ng-cloak属性
+</script>
+</body>
+</html>

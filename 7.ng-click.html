@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="appModule">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .block{
+            display: block;
+        }
+        .none{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div ng-controller="firstCtrl">
+    灯的开关{{flag}}
+    <div ng-click="show()">{{flag?'打开':'隐藏'}}</div>
+    <div ng-show="flag">
+        内容
+    </div>
+</div>
+<script src="node_modules/angular/angular.js"></script>
+<script>
+    var app = angular.module('appModule',[]);
+    app.controller('firstCtrl',function ($scope) {
+        //ng-click和javascript中的onclick用法一制
+        $scope.flag = true;
+        $scope.show = function () {
+            $scope.flag = !$scope.flag;
+        };
+    });
+    //当我们简单的切换display:block或者display：none的时候可以使用ng-show/ng-hide指令来进行切换
+    //ng-show/和ng-hide就是简单来操作css样式的 不会产生作用域
+
+    //ng-if 用来操作dom是否存在，如果不存在内部指令不再执行，并且如果为false当前dom会被移除掉，会产生作用域
+
+    //什么时候使用ng-show 什么时候使用ng-if
+    // 当频繁切换时 使用ng-show ng-hide 第一次初始化时消耗性能较高
+    // 当页面一加载就能确定的用ng-if 当频繁切换时消耗性能高
+</script>
+</body>
+</html>
+
+
+
+<!--
+//ng-app  ng-module ng-init ng-controller ng-repeat ng-show ng-hide ng-if ng-click ng-bind ng-non-bindable ng-bind-template ng-cloak-->

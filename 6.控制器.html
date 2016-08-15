@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="zfModule">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div data-ng-controller="firstCtrl">
+    <div ng-repeat="(key,value) in school">
+        <!--取出来是对应的属性的值，我们可以用解构的方式来获取对象的key值
+            在angularjs中给对象每一项配置了一个$index
+            ng-repeat会产生新的作用域
+        -->
+        {{key}}:{{value}}:{{$index}}
+    </div>
+    <div ng-repeat="apple in apples track by $index">
+        {{apple}}
+    </div>
+    <!--在当前遍历时保存parent变量等于当前的索引-->
+    <div ng-repeat="(parentkey,book) in books" >
+        <!--继续遍历type属性-->
+        <div ng-repeat="t in book.type">
+            <!--要取外层遍历的-->
+            {{parentkey}}{{book.name}}{{book.price}}
+            {{$index}}{{t}}
+        </div>
+    </div>
+    <div ng-repeat="book in books" ng-init="parent=$index">
+        <!--继续遍历type属性-->
+        <div ng-repeat="t in book.type">
+            <!--要取外层遍历的-->
+            {{parent}}{{book.name}}{{book.price}}
+            {{$index}}{{t}}
+        </div>
+    </div>
+</div>
+
+<script src="node_modules/angular/angular.js"></script>
+<script>
+    var app = angular.module('zfModule',[]);
+    app.controller('firstCtrl',function ($scope) {
+        //$scope.name = 'zfpx';//可以声明任何数据类型
+        $s = $scope;
+        $s.school = {
+            name:'zfpx',
+            address:'回龙观',
+            age:8
+        }
+        $s.apples = ['苹果','苹果','苹果',];
+        //在变量相同数据时，必须通过唯一的key进行遍历,可以使用track by 指定唯一的遍历,尽量指定track by属性
+        $s.books = [
+            {name:'nodejs',price:30,type:['幽默','复杂']},
+            {name:'angularjs',price:20,type:['基础','容易']},
+            {name:'vuejw',price:40,type:['轻松']},
+            {name:'reactJS',price:80,type:['困难']},
+        ]
+    });
+    //在ng中如果前面带有data-*** 和data-ng-***效果一样
+
+    //当我们从接口获取数据后，我们应该将数据遍历到对应的模板上
+    //使用ng-repeat非常像for(key in value)遍历
+</script>
+</body>
+</html>

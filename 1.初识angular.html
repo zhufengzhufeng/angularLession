@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body ng-app>
+<input type="text" ng-model="name">
+{{name}}
+<script src="node_modules/angular/angular.js"></script>
+<script>
+    //angular是框架我们一般让angular自动启动
+    //让angular来管理我们的项目，可以在指定范围内增加ng-app属性，告诉angular哪里归angular所管，在一个页面中只能指定一次ng-app属性
+    console.log(angular);
+    //$rootScope 跟作用域，不污染全局变量
+    //ng-app和dom标签是平行的
+
+    //ng-model是实现双线数据绑定的，只能放在视图可修改的地方，
+    //双向绑定： 数据改变 视图改变  视图改变会导致数据改变 view <-viewModel->model
+    //在ng-model上声明的属性，会在当前作用域下查找，如果查找不到，会声明一个变量
+    //绑定我们的视图，{{}}用来取出当前的作用域上的属性
+    //当我们改变表单的内容，会导致数据刷新，因为数据和表单进行了绑定,{{}}又可以取出对应的数据，
+</script>
+</body>
+</html>

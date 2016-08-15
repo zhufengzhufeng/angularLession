@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" ng-app>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body ng-init="name={name:'zfpx'}">
+<input type="text" ng-model="name.name">
+<script src="node_modules/angular/angular.js"></script>
+<script>
+   //ng-init用来声明属性，将属性声明在当前作用域下，因为只有一个作用域所以声明到了$rootScope,
+    //声明的类型 数组 数字 字符串 对象
+
+    //> 所有带ng开头的都是angular内置指令。在里面写的都是变量
+
+    //尽量不要污染全局变量：模块化，命名空间 闭包（创建作用域防止属性挂载在全局变量上）
+    //我们在angular也可以声明模块。一切从模块开始
+</script>
+</body>
+</html>
