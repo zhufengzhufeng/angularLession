@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="appModule">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+<body ng-controller="panelCtrl">
+<panel title="title" say="say(t)">{{content}}</panel>
+<panel title="title1" say="say(t)">{{content1}}</panel>
+<script src="../node_modules/angular/angular.js"></script>
+<script>
+    angular.module('appModule',[])
+            .controller('panelCtrl',['$scope',function ($scope) {
+                $scope.title = '这是first标题1';
+                $scope.content = '这是panel中的内容1';
+                $scope.title1 = '这是first标题2';
+                $scope.content1 = '这是panel中的内容2';
+                $scope.say = function (who) {
+                    alert(who);
+                }
+            }])
+            .directive('panel',function () {
+                    return {
+                        transclude:true,
+                        templateUrl:'panel.html',
+                        scope:{
+                            title:'=',
+                            a:'&say' //scope是指令的scope
+                        }
+                    }
+             });
+    //指令和指令间的交互
+</script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="appModule">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+    <style>
+        .title{
+            width: 100px;
+            height: 30px;
+            background: yellow;
+        }
+        .content{
+            width: 100px;
+            height: 100px;
+            background: red;
+        }
+    </style>
+</head>
+<body >
+<group>
+    <open title="标题"> 内容1</open>
+    <open title="标题"> 内容1</open>
+    <open title="标题"> 内容1</open>
+</group>
+<group>
+    <open title="标题"> 内容1</open>
+    <open title="标题"> 内容1</open>
+</group>
+<script src="../node_modules/angular/angular.js"></script>
+<script>
+    /*
+    * 我们要将open分组，在同一时间内 最多只能打开一个,
+    * 1. 第一步让下面的所用open 都依赖于group，
+    * 2. 讲自己的作用域都给group来管理
+    * 3. 当我们点击的时候将自己取反，告诉group当前点击的人，让group将其他人的关闭掉
+    *
+    * */
+    angular.module('appModule',[])
+            .directive('group',function () {
+                //所有的open都想给group来管理，group要提供一个方法
+               return {
+                   controller:function () {
+                       var scopeArr = [];//所有open的作用域，相当让group来管理所有的open
+                       this.add  = function (scope) {
+                           scopeArr.push(scope);
+                       }
+                       this.tellWho = function (scope) {
+                           //scope//代表当前点击的人
+                           //在作用域下所有人里查找，找到除了scope外的所有人 让其scope.flag都为false
+                           scopeArr.forEach(function (item) {
+                               if(item!= scope){
+                                   item.flag = false; //没有匹配到的都关闭掉
+                               }
+                           })
+                       }
+                   }
+               }
+            })
+            .directive('open',function () {
+                return {
+                    require:'^group', //相当于在当前指令上查找，要像上一级查找
+                    templateUrl:'open.html',
+                    transclude:true,
+                    //当我们依赖于父控制器后，会在link函数中的第四个参数注入父控制器的实例
+                    link:function (scope,element,attrs,groupCtrl) {
+                        scope.flag = false;
+                        scope.show = function () {
+                            scope.flag = !scope.flag;
+                            groupCtrl.tellWho(scope);
+                        }
+                        groupCtrl.add(scope);
+                    } ,
+                    scope:{
+                        title:'@'
+                    }
+                }
+            });
+</script>
+</body>
+</html>

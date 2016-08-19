@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="appModule">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        div{
+            width: 100px;
+            height: 100px;
+            background: red;
+            position: absolute;
+            top:0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+<div my-drag>box of drag</div>
+<div my-drag>box of drag</div>
+<script src="../node_modules/angular/angular.js"></script>
+<script>
+    //在js中如果发现属性的名字是xx-xxx  xxXxx margin-top  marginTop
+    angular.module('appModule',[]).directive('myDrag',function () {
+        return {
+            link:function (scope,element,attrs) {
+                //element为jq对象可以直接使用on方法
+                element.on('mousedown',function (e) {
+                    //当前鼠标点击的位置减去盒子边缘距离html的边缘的距离 = 当前鼠标距离盒子的边缘
+                    var disx = e.pageX - this.offsetLeft;
+                    var disy = e.pageY - this.offsetTop;
+                    //当鼠标移动时不停的计算盒子的left和top值
+                    angular.element(document).on('mousemove',function (e) {
+                        //在jq中不需要单位，添加单位
+                        element.css({
+                            left: (e.pageX - disx)+'px',
+                            top:(e.pageY - disy)+'px'
+                        })
+                    });
+                    angular.element(document).on('mouseup',function () {
+                        angular.element(document).off();
+                    });
+                    e.preventDefault();
+                })
+            }
+        }
+    });
+    //指令主要是抽取功能 ，还可以封装一些插件，在不同的页面中使用
+</script>
+</body>
+</html>

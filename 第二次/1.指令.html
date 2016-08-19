@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="appModule">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<hello></hello>
+<div hello></div>
+<div class="hello"></div>
+<!-- directive:hello -->
+<script src="../node_modules/angular/angular.js"></script>
+<script>
+    //自定义指令,指令是不依赖于我们的控制器
+    //先创建模块
+    var app = angular.module('appModule',[]);
+    //通过我们的模块来创建指令
+    //1.param1是指令的名字
+    //2.param2指令的函数
+    //指令的适用范围 Element attribute comment class   EAMC
+    app.directive('hello',function () {
+        return {
+            //限制生效范围 一般情况下不建议使用class comment
+            //restrict:'ECMA',
+            //将原指令替换掉
+            replace:true,
+            //默认指令可用的范围为EA ,我们可以给指令添加模板
+            template:'<div>hello world</div>'
+        }
+    });
+    //指令一共分为两类
+    //1.组件式指令，装饰型指令
+
+</script>
+</body>
+</html>

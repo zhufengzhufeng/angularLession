@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="appModule">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+<body>
+<panel title="这是模板的标题1">这是模板的内容1</panel>
+<panel title="这是模板的标题2">这是模板的内容2</panel>
+<!--
+    说明ng-translude属性会创建一个新的作用域，所有互不干扰
+    在指令执行时候，是看我们的html里面是否存有指令的名字，开始进行编译，多次声明同一个指令，会导致后面的覆盖前面的，我们就想创建一个独立作用域来解决这个问题
+-->
+<script src="../node_modules/angular/angular.js"></script>
+<script>
+    angular.module('appModule',[])
+            .directive('panel',function () {
+                    return {
+                        //将原有指令中的内容保存起来，放到我们想放的地方(标签上带有ng-transclude属性)
+                        transclude:true,
+                        templateUrl:'panel.html',
+                        //两种方式可以创建独立作用域可以使用scope：true或者scope = {}
+                        //区别 scope:true不会断绝父子关系 scope:{}会完全断绝关系
+                        scope:{},
+                        link:function (scope,element,attrs) {
+                            console.log(attrs);
+                            //在当前作用域下声明一个title属性
+                            scope.title = attrs.title
+                        }
+                    }
+             });
+</script>
+</body>
+</html>

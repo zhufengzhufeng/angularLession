@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="appModule">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+<body ng-controller="panelCtrl">
+<panel title="title">{{content}}</panel>
+<panel title="title1">{{content1}}</panel>
+<script src="../node_modules/angular/angular.js"></script>
+<script>
+    angular.module('appModule',[])
+            .controller('panelCtrl',['$scope',function ($scope) {
+                $scope.title = '这是first标题1';
+                $scope.content = '这是panel中的内容1';
+                $scope.title1 = '这是first标题2';
+                $scope.content1 = '这是panel中的内容2';
+                //可以有三种方式和控制器进行交互
+                //第一种 叫传递字符串 @
+                //第二种 叫传递变量   =
+                //第三种 叫传递方法   &
+            }])
+            .directive('panel',function () {
+                    return {
+                        transclude:true,
+                        templateUrl:'panel.html',
+                        scope:{
+                           // title:'@' //取字符串的  scope.title = title
+                            title:'='//取变量
+                        },
+                        link:function (scope,element,attrs) {
+                            //scope.title = attrs.title
+                            //我们本来就是引用属性上的title在当前作用域下声明个title
+                        }
+                    }
+             });
+</script>
+</body>
+</html>
