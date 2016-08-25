@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="appModule">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="node_modules/angular/angular-csp.css">
+</head>
+<body ng-controller="bookCtrl">
+<table class="table table-bordered">
+    <tr>
+        <td>书的名字</td>
+        <td>书的价格</td>
+        <td>书的数量</td>
+        <td>小计</td>
+        <td>操作</td>
+    </tr>
+    <tr ng-repeat="book in books track by $index" ng-cloak>
+        <td>{{book.name}}</td>
+        <td>{{book.price}}</td>
+        <td><input type="text" ng-model="book.count"></td>
+        <td>{{book.price*book.count}}</td>
+        <td><button ng-click="remove(book)" class="btn btn-primary">删除</button></td>
+        <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" ng-click="updatePrice(book)">
+           修改
+        </button></td>
+    </tr>
+</table>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                书的名字<input type="text" ng-model="bookOne.name">
+                书的价格<input type="text" ng-model="bookOne.price">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" ng-click="update()">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="node_modules/jquery/dist/jquery.js"></script>
+<script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
+<script src="node_modules/angular/angular.js"></script>
+<script src="node_modules/angular/angular.js"></script>
+<script src="node_modules/angular-resource/angular-resource.js"></script>
+<script>
+    var app = angular.module('appModule',['ngResource']);
+    app.factory('book',function ($resource) {
+        //$resouce提供了对http的封装 查询query 删除delete  保存save
+        //没有修改，我们可以手动增加一个
+        return $resource('/book/:id',{
+            id:'@id'
+        },{
+            update:{
+                method:'PUT'
+            }
+        })
+    });
+    app.controller('bookCtrl',function ($scope,book) {
+        //对书的增删改查 至少需要四个接口
+        //将公用的调取接口，封装成服务 put get delete post
+        //get /book/1 表示获取一本书
+        //get /book 表示获取所有书
+        $scope.books = book.query();//查询所有书
+        $scope.remove = function (b) {
+            //删掉后再次查询
+            book.delete({id:b.id}).$promise.then(function () {
+                $scope.books = book.query();
+            });
+        }
+        $scope.bookOne = '';
+        $scope.updatePrice = function (b) {
+            $scope.bookOne = JSON.parse(JSON.stringify(b));
+        }
+        $scope.update = function () {
+            book.update({id:$scope.bookOne.id},{data:$scope.bookOne}).$promise.then(function () {
+                $scope.books = book.query();
+                $('.modal').modal('toggle')
+            });
+        }
+    });
+</script>
+
+
+
+</body>
+</html>

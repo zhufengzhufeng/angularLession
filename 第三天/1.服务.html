@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="appModule">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body ng-controller="myCtrl">
+<input type="text" ng-model="a">
++
+<input type="text" ng-model="b">
+= {{result}} <br>
+<button ng-click="add()">结果</button>
+<script src="node_modules/angular/angular.js"></script>
+<script>
+    var app = angular.module('appModule',[]);
+    //服务，为了提取公用的方法，
+    //provider factory service value constant  一种装饰decorator
+    //在服务中只有provider可以配置 constant其实不算一种服务只是常量
+
+    //provider是最大的服务 $timeout $interval $http
+    //我们自己定义的服务一般不用$开头
+    //指令 控制器 服务都是通过我们的模块来声明的
+    //param1 是我们的服务的名字
+    //param2 是执行的方法
+
+    //此处用来配置服务
+    app.config(function (my) {
+        //如果想配置服务，必须在我们声明的服务后加上Provider
+        my.currency = '￡'; //如果对象上没有这个属性，可以增加属性
+    });
+
+    //当angular执行的时候运行
+    app.run(function ($rootScope,my) { //所有服务都能在run方法中增加属性
+        my.a = 100;
+    });
+    /*app.provider('my',function () {
+                        //当我们在控制器中使用，注入到控制器中,此时会默认调用provider的$get 方法;
+                        this.currency = '$';
+                        this.$get = function () {
+                            return {
+                                '+': (a, b)=> {
+                                    //如果直接使用this 那么this就是这个返回的对象
+                                    return this.currency+(parseInt(a) + parseInt(b));
+                    //provider最大的好处就是可配置
+                    //angular的执行顺序,先执行config  在执行run方法
+                }
+            }
+        }
+    });*/
+
+
+    //factory直接放回我们的对象   provider构建出factory
+   /* app.factory('my',function () {
+        this.currency ='$';
+        return {
+            '+':(a,b) =>{
+                return this.currency+a+b;
+            }
+        }
+    });*/
+    //除了provider其他的都不可配置
+
+    //service factory 构建出service
+
+   /* app.service('my',function () {
+        //当使用时 ，直接new构造函数
+        this.currency = '$';
+        this["+"] = function (a,b) {
+            return this.currency + a+b;
+        }
+    });*/
+
+   /*app.value('my',{
+        '+':function (a,b) {
+            return this.currency+a+b;
+        }
+   });*/
+    //和value的用法一样 ，constant不算是一个服务，他可以配置
+    app.constant('my',{
+        '+':function (a,b) {
+            return this.currency+a+b;
+        }
+    });
+
+    //服务通常情况下都是单例的
+    app.controller('myCtrl',function ($scope,my) {
+        //把公有的加法 提取出来
+        $scope.add = function () {
+            $scope.result = my['+']($scope.a,$scope.b);
+            console.log(my.a);
+        }
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="appModule">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body ng-controller="myCtrl">
+<script src="node_modules/angular/angular.js"></script>
+<script>
+    var app = angular.module('appModule',[]);
+    app.config(function ($provide) {
+        //通过$provide来装饰
+        /*$provide.decorator('$log',function ($delegate) {
+            console.log($delegate);//代理
+            //我们要取出原有的方法进行装饰
+            var fn = $delegate.log;
+            $delegate.log = function () {
+                //如果调用log方法会执行当前的函数，要接收到传递参数,在参数列表前增加一个参数
+                var args = Array.of(...arguments);
+                args.unshift(new Date());
+                fn.apply(null,args);
+            }
+            return $delegate;
+        });*/
+        $provide.decorator('my',function ($delegate) {
+            $delegate['-'] = function (a,b) {
+                return a-b;
+            };
+            return $delegate;
+        })
+    });
+    app.value('my',{
+        '+':function (a,b) {
+            return a+b
+        }
+    });
+    app.controller('myCtrl',function ($log,my) {
+        console.log(  my['-'](1,2));
+    });
+
+    //restful风格 根据http四个动词来进行增删改查，将同一类的封装起来  操作书的同一封装一样
+
+</script>
+</body>
+</html>
