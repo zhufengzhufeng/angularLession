@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="appModule">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+<body>
+<ul class="nav nav-pills">
+    <li><a ui-sref="home">首页</a></li>
+    <li><a ui-sref="user">用户页</a></li>
+</ul>
+<div ui-view></div>
+<script src="node_modules/angular/angular.js"></script>
+<script src="node_modules/angular-ui-router/release/angular-ui-router.js"></script>
+
+<script>
+    var app = angular.module('appModule',['ui.router']);
+    app.run(function ($rootScope) {
+        //toState去哪里
+        //toParams 带去的参数
+        $rootScope.$on('$stateChangeStart',function (event,toState,toParams,fromState,fromParams) {
+            console.log(toState);
+        })
+    })
+    app.config(function ($stateProvider,$urlRouterProvider) {
+        $stateProvider.state('home',{
+            url:'/home',
+            template:'首页{{zfpx}}',
+            resolve:{ //resolve为了防止数据没有获取到就显示给用户了
+                getDate:function ($http) {
+                    //返回一个promise对象
+                    return $http.get('/getName');
+                }
+            },
+            controller:function ($scope,getDate) {
+                $scope.zfpx =getDate.data.name;
+            }
+        }).state('user',{
+            url:'/user',
+            templateUrl:'tmpl/user.html',
+            controller:function ($scope,$state) {
+                //通过$state.go 跳转页面
+                $state.go('user.update')
+            }
+        }).state('user.update',{
+            url:'/update',
+            template:'update'
+        }).state('user.info',{
+            url:'/info/:id',
+            views:{
+                '':{
+                    templateUrl:'tmpl/info.html',
+                    controller:function ($scope,$stateParams) {
+                        $scope.title='珠峰的模板'
+                        $scope.id = $stateParams.id
+                    }
+                },
+                'header@user.info':{
+                    templateUrl:'tmpl/header.html'
+                },
+                'footer@user.info':{
+                    templateUrl:'tmpl/footer.html'
+                }
+            }
+        }).state('user.settings',{
+            url:'/settings',
+            template:'settings<a ui-sref="user.info({id:100})">传一个100的模板过去</a>'
+        }); //$stateProvder是没有ohterwise的
+        $urlRouterProvider.otherwise('home');// 其余情况
+        //要告诉页面在哪里使用这个模板 ui-view
+    })
+</script>
+
+
+
+</body>
+</html>
