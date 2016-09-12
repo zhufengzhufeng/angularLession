@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="appModule">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body >
+<div ng-controller="myCtrl" ng-if="flag">
+    <input type="text" ng-model="name">
+    {{name}}
+    <button ng-click="removeCtrl()">点击后移除controller</button>
+</div>
+
+<script src="angular.js"></script>
+<script>
+    var app = angular.module('appModule',[]);
+    app.run(function ($rootScope) {
+        $rootScope.flag = true;
+        $rootScope.removeCtrl = function () {
+            $rootScope.flag = false
+        }
+    })
+    app.controller('myCtrl',function ($scope,$interval) {
+        $scope.name = 'zfpx';
+        //$apply 应用
+        //$watch监控 监控数据的变化的
+        console.log($scope);
+        //监听name的属性变化
+        //写法1：
+        /*$scope.$watch('name',function (newVal,oldVal) {
+            console.log(newVal,oldVal);
+        });*/
+        //写法2： 只要当前作用域上的值有变化就会执行第一个函数，如果第一个函数返回的值发生变化，就会触发第二个函数
+        $scope.$watch(function () {
+            return $scope.name
+        },function (newVal,oldVal) {
+            console.log(newVal,oldVal);
+        });
+        //$apply 刷新视图
+        //setInterval不是angular自带的方法，不会导致视图刷新
+        /*setInterval(function () {
+            $scope.name+=1;
+            $scope.$apply();//调用apply数据发生变化会强制刷新视图
+        },1000);*/
+        var timer = $interval(function () {//angular自带的方法会默认调用apply方法
+            $scope.name+=1;
+        },1000);
+        //在作用域销毁时，清空定时器
+        $scope.$on('$destroy',function () {
+            console.log('我死了');
+            $interval.cancel(timer);
+        });
+
+    })
+</script>
+</body>
+</html>

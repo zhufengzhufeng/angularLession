@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en" ng-app="appModule">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+<div ng-controller="ctrl">
+    {{total()}}
+</div>
+<script src="angular.js"></script>
+<script>
+    var app = angular.module('appModule',[]);
+    app.controller('ctrl',function ($scope) {
+        $scope.total = function () {
+            console.log(100);
+        }
+    });
+    //total要进行脏值检查，第一次做脏检查的时候，发现数据变化要刷新视图，会调用我们的回调函数，在回调函数中有可能会改变其他的值，所以要在将整个数组中的方法执行一次，直到值没有变化为止，就结束
+</script>
+</body>
+</html>

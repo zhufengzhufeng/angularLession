@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en" ng-app="appModule">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+<div ng-controller="myCtrl">
+    <input type="text" zf-model="name">
+    {{name}}
+</div>
+
+<script src="angular.js"></script>
+<script>
+    var app = angular.module('appModule',[]);
+    app.controller('myCtrl',function ($scope,$timeout) {
+        $scope.name  = 100;
+        $timeout(function () {
+            $scope.name=500
+        },2000)
+    });
+    app.directive('zfModel',function () {
+        return {
+            link:function (scope,element,attrs) {
+                //1.应该先将作用域上的值赋予给我们的input元素
+                //2.当用户输入内容时刷新视图，并且更改我们的数据
+                //讲课zfModel的值的变化，将变化的值放置到input中
+                element.on('input',function () {
+                    //scope.name = 我们现在输入的内容
+                    scope[attrs["zfModel"]] = element.val();
+                    scope.$apply();
+                });
+                scope.$watch(attrs["zfModel"],function (newVal,oldValue) {
+                    console.log(newVal);
+                    element.val(newVal);
+                });
+
+
+
+
+            }
+        }
+    });
+</script>
+</body>
+</html>

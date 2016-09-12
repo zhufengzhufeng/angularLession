@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="appModule">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+<body>
+<!--什么是路由，控制页面跳转的-->
+
+<!--指定当前的模板使用在什么位置-->
+<ul class="nav nav-pills">
+    <li ng-class="{active:currentStyle.startsWith('home')}"><a href="#/home">首页</a></li>
+    <li ng-class="{active:currentStyle.startsWith('user')}"><a href="#/user">课程列表</a></li>
+    <li ng-class="{active:currentStyle.startsWith('settings')}"><a href="#/settings">设置</a></li>
+    <li ng-class="{active:currentStyle.startsWith('person')}"><a href="#/person/100">显示第几个学生</a></li>
+</ul>
+<div ng-view></div>
+
+<script src="./node_modules/angular/angular.js"></script>
+<script src="./node_modules/angular-route/angular-route.js"></script>
+<script>
+    /*锚点的作用
+    * 请求不同的页面是必须要使用不同的路径
+    * 通过锚点区分不同的数据 好处是不用刷新页面而且会产生历史管理
+    *
+    * */
+    var app = angular.module('appModule',['ngRoute']);
+    //路由是配置出来的 配置$route服务
+    app.run(function ($rootScope,$location) {
+        //当路由一发生变化就会触发routeChangeStart事件
+        $rootScope.login = false; //默认没有登陆状态
+        $rootScope.$on('$routeChangeStart',function (event,toState,fromState) {
+            //取当前 /后面的内容  /user   user /person/1  person/1
+            $rootScope.currentStyle = toState.$$route.originalPath.slice(1);
+             console.log(toState,fromState);
+            //toState中有$$route.originalPath里面存放的当前的路径
+            if(toState.$$route.originalPath=='/settings'&&!$rootScope.login){
+                //先阻止他跳转到settings中
+                event.preventDefault(); //并且我们需要跳转到首页
+                $location.path('/');//window.location.href
+            }
+        })
+    });
+
+
+
+    app.config(function ($routeProvider) {
+        //provider this.$get
+        $routeProvider.when('/home',{
+            //使用templateUrl 进行请求路径
+            templateUrl:'tmpl/homepage.html',
+            //template:'zfpx homepage' //指定/路径下对应的模板
+            //指定路由对应的控制
+            controller:'homeCtrl',//指定使用的控制器
+        }).when('/user',{
+            template:'zfpx user'
+        }).when('/settings',{
+            template:'设置页面'
+        }).when('/person/:id',{
+            template:'设置页面{{id}}',
+            controller:function ($routeParams,$scope) { //需要配置控制器，要取到id
+                $scope.id = $routeParams.id;
+            }
+        }).otherwise('/home'); //其余的路径
+    });
+    app.controller('homeCtrl',function ($scope) {
+        $scope.lessons = [
+            'nodejs',
+            'angularjs',
+            'reactjs',
+            'vuejs'
+        ]
+    });
+    //ng-view 不支持路由的嵌套
+</script>
+</body>
+</html>

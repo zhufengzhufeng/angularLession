@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" ng-app="appModule">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+<!--
+    购买商品 根据商品的总和 和单价可以算出数量
+    可以根据数量算出商品的总和
+
+-->
+
+<div ng-controller="parentCtrl">
+    <input type="text" ng-model="total" ng-change="changeTotal()">
+    <div ng-controller="childCtrl">
+        商品的单价是{{product.price}}
+        <input type="text" ng-model="product.count">
+    </div>
+</div>
+<script src="angular.js"></script>
+<script>
+    //控制器是不能复用的，想在控制器间传递数据要通过我们的事件
+    var app = angular.module('appModule',[]);
+    app.controller('parentCtrl',function ($scope) {
+        $scope.total = 20;
+        $scope.$on('total',function (e,data) {
+            //data表示你告诉我的事情
+            $scope.total = data
+        });
+        $scope.changeTotal = function () {
+            $scope.$broadcast('changeTotal',$scope.total)
+        }
+    });
+    app.controller('childCtrl',function ($scope) {
+        $scope.product = {
+            price:20,
+            count:1
+        }
+        $scope.$watch('product.count',function (newVal,oldVal) {
+            console.log(newVal);
+            //要把总和算出发送给父亲
+            $scope.$emit('total',newVal*$scope.product.price)
+        });
+        $scope.$on('changeTotal',function (e,data) {
+            $scope.product.count = data/$scope.product.price;
+        })
+    });
+    //$on 监听  $emit 向上发射事件，并且上级能接到，自己也可以知道
+    //$broadcast 广播事件 ，下级能知道，自己也能知道
+
+
+</script>
+</body>
+</html>

@@ -28,13 +28,17 @@
             url:'/home',
             template:'首页{{zfpx}}',
             resolve:{ //resolve为了防止数据没有获取到就显示给用户了
-                getDate:function ($http) {
+                getDate:function ($q) {
                     //返回一个promise对象
-                    return $http.get('/getName');
+                    var defer = $q.defer();
+                    setTimeout(function () {
+                        defer.resolve({name:'珠峰培训'})
+                    },3000);
+                    return defer.promise;
                 }
             },
             controller:function ($scope,getDate) {
-                $scope.zfpx =getDate.data.name;
+                $scope.zfpx =getDate.name;
             }
         }).state('user',{
             url:'/user',
